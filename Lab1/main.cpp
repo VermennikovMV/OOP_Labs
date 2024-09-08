@@ -1,6 +1,5 @@
 #include <iostream>
 #include "include/solve_func.h"
-#include "src/solve_func.cpp"
 
 int main()
 {
