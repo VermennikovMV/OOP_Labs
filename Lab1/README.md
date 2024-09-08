@@ -6,5 +6,5 @@
 3. ./tests
 
 А если хотим запустить main.cpp (то есть проверить работу с вводом данных через консоль), то пишем. Через cmake почему-то не компилируется:
-1. g++ -o main main.cpp src/solveFunc.cpp
+1. g++ -o main main.cpp src/solve_func.cpp
 2. ./main
