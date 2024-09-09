@@ -1,7 +1,26 @@
-build/*
-.vscode/*
+# VS Code settings folder
+.vscode/
 
-.DS_Store
+# Project's build files
+build/*
+
+# Logs
+*.log
+
+# Reports
+*.pdf
+*.docx
+
+# Media
+*.png
+*.jpg
+*.webm
+*.mp4
+*.mkv
+*.mp3
+
+# C++ .gitignore template below
+
 # Prerequisites
 *.d
 
