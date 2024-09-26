@@ -6,17 +6,13 @@ int main()
   int lhv, rhv;
   std::cout << "введите ширину: ";
   std::cin >> lhv;
-  if (is_valid_int_input(lhv))
-  {
+  if (is_valid_int_input(lhv)) {
     std::cout << "введите длину: ";
     std::cin >> rhv;
-    if (!is_valid_int_input(lhv))
-    {
+    if (!is_valid_int_input(lhv)) {
       return 0;
     }
-  }
-  else
-  {
+  } else {
     return 0;
   }
 
