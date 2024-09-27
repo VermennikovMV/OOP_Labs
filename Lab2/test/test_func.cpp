@@ -8,7 +8,7 @@
 #include <cctype>
 #include <iostream>
 
-// Helper function to split a string into tokens
+// Функция для разбиения строки на токены
 std::vector<std::string> tokenize(const std::string &str)
 {
     std::vector<std::string> tokens;
@@ -24,7 +24,6 @@ std::vector<std::string> tokenize(const std::string &str)
 
         if (isdigit(str[i]))
         {
-            // Number token
             token.clear();
             while (i < str.length() && isdigit(str[i]))
             {
@@ -34,7 +33,6 @@ std::vector<std::string> tokenize(const std::string &str)
         }
         else if (str[i] == '<' || str[i] == '>' || str[i] == '=' || str[i] == '!')
         {
-            // Comparison operator
             token = str[i++];
             if (i < str.length() && str[i] == '=')
             {
@@ -45,13 +43,11 @@ std::vector<std::string> tokenize(const std::string &str)
         }
         else if (str[i] == '+' || str[i] == '-')
         {
-            // Arithmetic operator
             token = str[i++];
             tokens.push_back(token);
         }
         else
         {
-            // Invalid character
             throw std::invalid_argument("Invalid character in expression");
         }
     }
@@ -66,29 +62,29 @@ bool test_func(const std::string &expression)
 
         if (tokens.size() == 3)
         {
-            // Format: number comparison_operator number
+            // Формат: число оператор_сравнения число
             Six num1(tokens[0]);
             std::string comp_op = tokens[1];
             Six num2(tokens[2]);
 
             if (comp_op == "==")
-                return num1 == num2;
+                return num1.isEqual(num2);
             else if (comp_op == "!=")
-                return num1 != num2;
+                return num1.isNotEqual(num2);
             else if (comp_op == "<")
-                return num1 < num2;
+                return num1.isLessThan(num2);
             else if (comp_op == "<=")
-                return num1 <= num2;
+                return num1.isLessThanOrEqual(num2);
             else if (comp_op == ">")
-                return num1 > num2;
+                return num1.isGreaterThan(num2);
             else if (comp_op == ">=")
-                return num1 >= num2;
+                return num1.isGreaterThanOrEqual(num2);
             else
-                throw std::invalid_argument("Invalid comparison operator");
+                throw std::invalid_argument("Недопустимый оператор сравнения");
         }
         else if (tokens.size() == 5)
         {
-            // Format: number arithmetic_operator number comparison_operator number
+            // Формат: число оператор_арифметики число оператор_сравнения число
             Six num1(tokens[0]);
             std::string arith_op = tokens[1];
             Six num2(tokens[2]);
@@ -97,30 +93,30 @@ bool test_func(const std::string &expression)
 
             Six arith_result;
             if (arith_op == "+")
-                arith_result = num1 + num2;
+                arith_result.assign(num1.add(num2));
             else if (arith_op == "-")
-                arith_result = num1 - num2;
+                arith_result.assign(num1.subtract(num2));
             else
-                throw std::invalid_argument("Invalid arithmetic operator");
+                throw std::invalid_argument("Недопустимый арифметический оператор");
 
             if (comp_op == "==")
-                return arith_result == num3;
+                return arith_result.isEqual(num3);
             else if (comp_op == "!=")
-                return arith_result != num3;
+                return arith_result.isNotEqual(num3);
             else if (comp_op == "<")
-                return arith_result < num3;
+                return arith_result.isLessThan(num3);
             else if (comp_op == "<=")
-                return arith_result <= num3;
+                return arith_result.isLessThanOrEqual(num3);
             else if (comp_op == ">")
-                return arith_result > num3;
+                return arith_result.isGreaterThan(num3);
             else if (comp_op == ">=")
-                return arith_result >= num3;
+                return arith_result.isGreaterThanOrEqual(num3);
             else
-                throw std::invalid_argument("Invalid comparison operator");
+                throw std::invalid_argument("Недопустимый оператор сравнения");
         }
         else
         {
-            throw std::invalid_argument("Invalid expression format");
+            throw std::invalid_argument("Неверный формат выражения");
         }
     }
     catch (const std::exception &e)

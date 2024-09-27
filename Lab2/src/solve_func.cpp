@@ -1,23 +1,22 @@
 // solve_func.cpp
 
 #include "../include/solve_func.h"
+#include <cstring>   // Для memcpy, memset
+#include <algorithm> // Для std::max
+#include <stdexcept>
 
-#include <cstring>   // For memcpy
-#include <algorithm> // For std::max
-#include <sstream>
+using namespace std;
 
-// Default constructor
+// Конструкторы и деструктор
+
 Six::Six()
-    : digits(nullptr), size(0)
-{
-}
+    : digits(nullptr), size(0) {}
 
-// Constructor with size and default digit
 Six::Six(const size_t &n, unsigned char t)
     : size(n)
 {
     if (t > 5)
-        throw std::invalid_argument("Digit must be between 0 and 5");
+        throw invalid_argument("Цифра должна быть от 0 до 5");
 
     digits = new unsigned char[size];
     for (size_t i = 0; i < size; ++i)
@@ -28,8 +27,7 @@ Six::Six(const size_t &n, unsigned char t)
     normalize();
 }
 
-// Constructor from initializer list
-Six::Six(const std::initializer_list<unsigned char> &t)
+Six::Six(const initializer_list<unsigned char> &t)
     : size(t.size())
 {
     digits = new unsigned char[size];
@@ -37,7 +35,7 @@ Six::Six(const std::initializer_list<unsigned char> &t)
     for (auto it = t.begin(); it != t.end(); ++it, ++index)
     {
         if (*it > 5)
-            throw std::invalid_argument("Digit must be between 0 and 5");
+            throw invalid_argument("Цифра должна быть от 0 до 5");
 
         digits[index] = *it;
     }
@@ -45,18 +43,16 @@ Six::Six(const std::initializer_list<unsigned char> &t)
     normalize();
 }
 
-// Constructor from string
-Six::Six(const std::string &t)
+Six::Six(const string &t)
 {
-    // Assuming the string is a base-6 number, with most significant digit first
     size = t.length();
     digits = new unsigned char[size];
 
     for (size_t i = 0; i < size; ++i)
     {
-        char c = t[size - i - 1]; // Reverse the string to store least significant digit first
+        char c = t[size - i - 1]; // Переворачиваем строку для хранения младшего разряда первым
         if (c < '0' || c > '5')
-            throw std::invalid_argument("Invalid digit in string");
+            throw invalid_argument("Неверная цифра в строке");
 
         digits[i] = c - '0';
     }
@@ -64,81 +60,72 @@ Six::Six(const std::string &t)
     normalize();
 }
 
-// Copy constructor
 Six::Six(const Six &other)
     : digits(nullptr), size(0)
 {
     copyFrom(other);
 }
 
-// Move constructor
 Six::Six(Six &&other) noexcept
     : digits(nullptr), size(0)
 {
     moveFrom(std::move(other));
 }
 
-// Destructor
 Six::~Six() noexcept
 {
     release();
 }
 
-// Assignment operator
-Six &Six::operator=(const Six &other)
+// Методы присваивания
+
+void Six::assign(const Six &other)
 {
     if (this != &other)
     {
         release();
         copyFrom(other);
     }
-    return *this;
 }
 
-// Move assignment operator
-Six &Six::operator=(Six &&other) noexcept
+void Six::assignMove(Six &&other) noexcept
 {
     if (this != &other)
     {
         release();
         moveFrom(std::move(other));
     }
-    return *this;
 }
 
-// Arithmetic operators
+// Арифметические методы
 
-// Addition
-Six Six::operator+(const Six &other) const
+Six Six::add(const Six &other) const
 {
     Six result = *this;
-    result += other;
+    result.addAssign(other);
     return result;
 }
 
-Six &Six::operator+=(const Six &other)
+void Six::addAssign(const Six &other)
 {
     addDigits(other);
-    return *this;
 }
 
-// Subtraction
-Six Six::operator-(const Six &other) const
+Six Six::subtract(const Six &other) const
 {
     Six result = *this;
-    result -= other;
+    result.subtractAssign(other);
     return result;
 }
 
-Six &Six::operator-=(const Six &other)
+void Six::subtractAssign(const Six &other)
 {
     subtractDigits(other);
-    return *this;
 }
 
-// Comparison operators
+// Методы сравнения
 
-bool Six::operator==(const Six &other) const
+bool Six::isEqual(const Six &other) const
 {
     if (size != other.size)
         return false;
@@ -150,62 +137,61 @@ bool Six::operator==(const Six &other) const
     return true;
 }
 
-bool Six::operator!=(const Six &other) const
+bool Six::isNotEqual(const Six &other) const
 {
-    return !(*this == other);
+    return !isEqual(other);
 }
 
-bool Six::operator<(const Six &other) const
+bool Six::isLessThan(const Six &other) const
 {
     if (size != other.size)
-    {
         return size < other.size;
-    }
     for (size_t i = size; i > 0; --i)
     {
         if (digits[i - 1] != other.digits[i - 1])
             return digits[i - 1] < other.digits[i - 1];
     }
-    return false; // Equal
+    return false;
 }
 
-bool Six::operator<=(const Six &other) const
+bool Six::isLessThanOrEqual(const Six &other) const
 {
-    return *this < other || *this == other;
+    return isLessThan(other) || isEqual(other);
 }
 
-bool Six::operator>(const Six &other) const
+bool Six::isGreaterThan(const Six &other) const
 {
-    return !(*this <= other);
+    return !isLessThanOrEqual(other);
 }
 
-bool Six::operator>=(const Six &other) const
+bool Six::isGreaterThanOrEqual(const Six &other) const
 {
-    return !(*this < other);
+    return !isLessThan(other);
 }
 
-// Friend function for output
-std::ostream &operator<<(std::ostream &os, const Six &obj)
+// Метод для вывода числа в виде строки
+
+string Six::toString() const
 {
-    if (obj.size == 0)
+    if (size == 0)
     {
-        os << '0';
-        return os;
+        return "0";
     }
-    for (size_t i = obj.size; i > 0; --i)
+    string result;
+    for (size_t i = size; i > 0; --i)
     {
-        os << static_cast<char>('0' + obj.digits[i - 1]);
+        result += static_cast<char>('0' + digits[i - 1]);
     }
-    return os;
+    return result;
 }
 
-// Private helper methods
+// Вспомогательные методы
 
 void Six::copyFrom(const Six &other)
 {
     size = other.size;
     digits = new unsigned char[size];
-    std::memcpy(digits, other.digits, size * sizeof(unsigned char));
+    memcpy(digits, other.digits, size * sizeof(unsigned char));
 }
 
 void Six::moveFrom(Six &&other)
@@ -225,14 +211,12 @@ void Six::release()
 
 void Six::normalize()
 {
-    // Remove leading zeros (from the highest index)
     while (size > 0 && digits[size - 1] == 0)
     {
         --size;
     }
     if (size == 0)
     {
-        // Number is zero, keep one digit zero
         delete[] digits;
         digits = new unsigned char[1];
         digits[0] = 0;
@@ -240,9 +224,8 @@ void Six::normalize()
     }
     else
     {
-        // Resize the digits array
         unsigned char *newDigits = new unsigned char[size];
-        std::memcpy(newDigits, digits, size * sizeof(unsigned char));
+        memcpy(newDigits, digits, size * sizeof(unsigned char));
         delete[] digits;
         digits = newDigits;
     }
@@ -250,9 +233,9 @@ void Six::normalize()
 
 void Six::addDigits(const Six &other)
 {
-    size_t maxSize = std::max(size, other.size) + 1; // +1 for possible carry over
+    size_t maxSize = std::max(size, other.size) + 1;
     unsigned char *resultDigits = new unsigned char[maxSize];
-    std::memset(resultDigits, 0, maxSize * sizeof(unsigned char));
+    memset(resultDigits, 0, maxSize * sizeof(unsigned char));
 
     size_t i = 0;
     unsigned char carry = 0;
@@ -278,13 +261,12 @@ void Six::addDigits(const Six &other)
 
 void Six::subtractDigits(const Six &other)
 {
-    // Assuming *this >= other
-    if (*this < other)
-        throw std::underflow_error("Result would be negative");
+    if (isLessThan(other))
+        throw std::underflow_error("Результат был бы отрицательным");
 
     size_t maxSize = size;
     unsigned char *resultDigits = new unsigned char[maxSize];
-    std::memset(resultDigits, 0, maxSize * sizeof(unsigned char));
+    memset(resultDigits, 0, maxSize * sizeof(unsigned char));
 
     size_t i = 0;
     unsigned char borrow = 0;
@@ -295,7 +277,7 @@ void Six::subtractDigits(const Six &other)
         unsigned char diff;
         if (aDigit < bDigit + borrow)
         {
-            diff = (unsigned char)(aDigit + 6 - bDigit - borrow);
+            diff = static_cast<unsigned char>(aDigit + 6 - bDigit - borrow);
             borrow = 1;
         }
         else
@@ -310,7 +292,7 @@ void Six::subtractDigits(const Six &other)
     if (borrow != 0)
     {
         delete[] resultDigits;
-        throw std::underflow_error("Result would be negative");
+        throw std::underflow_error("Результат был бы отрицательным");
     }
 
     delete[] digits;

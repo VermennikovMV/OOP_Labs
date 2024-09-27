@@ -1,54 +1,53 @@
 // solve_func.h
 
-#include <iostream>
 #include <string>
 #include <initializer_list>
-#include <stdexcept>
 
 class Six
 {
 public:
-    Six();                                              // Default constructor
-    Six(const size_t &n, unsigned char t = 0);          // Constructor with size and default digit
-    Six(const std::initializer_list<unsigned char> &t); // Constructor from initializer list
-    Six(const std::string &t);                          // Constructor from string
-    Six(const Six &other);                              // Copy constructor
-    Six(Six &&other) noexcept;                          // Move constructor
-    virtual ~Six() noexcept;                            // Destructor
+    // Конструкторы
+    Six();
+    Six(const size_t &n, unsigned char t = 0);
+    Six(const std::initializer_list<unsigned char> &t);
+    Six(const std::string &t);
+    Six(const Six &other);
+    Six(Six &&other) noexcept;
+    virtual ~Six() noexcept;
 
-    // Assignment operator
-    Six &operator=(const Six &other);
-    Six &operator=(Six &&other) noexcept;
+    // Методы присваивания
+    void assign(const Six &other);
+    void assignMove(Six &&other) noexcept;
 
-    // Arithmetic operators
-    Six operator+(const Six &other) const;
-    Six &operator+=(const Six &other);
+    // Арифметические методы
+    Six add(const Six &other) const;
+    void addAssign(const Six &other);
 
-    Six operator-(const Six &other) const;
-    Six &operator-=(const Six &other);
+    Six subtract(const Six &other) const;
+    void subtractAssign(const Six &other);
 
-    // Comparison operators
-    bool operator==(const Six &other) const;
-    bool operator!=(const Six &other) const;
-    bool operator<(const Six &other) const;
-    bool operator<=(const Six &other) const;
-    bool operator>(const Six &other) const;
-    bool operator>=(const Six &other) const;
+    // Методы сравнения
+    bool isEqual(const Six &other) const;
+    bool isNotEqual(const Six &other) const;
+    bool isLessThan(const Six &other) const;
+    bool isLessThanOrEqual(const Six &other) const;
+    bool isGreaterThan(const Six &other) const;
+    bool isGreaterThanOrEqual(const Six &other) const;
 
-    // Friend function for output
-    friend std::ostream &operator<<(std::ostream &os, const Six &obj);
+    // Метод для вывода числа в виде строки
+    std::string toString() const;
 
 private:
-    unsigned char *digits; // Dynamic array of digits
-    size_t size;           // Number of digits
+    unsigned char *digits; // Динамический массив цифр
+    size_t size;           // Количество цифр
 
     void copyFrom(const Six &other);
     void moveFrom(Six &&other);
     void release();
 
-    void normalize(); // Remove leading zeros
+    void normalize(); // Удаление незначащих нулей
 
-    // Helper methods
+    // Вспомогательные методы
     void addDigits(const Six &other);
     void subtractDigits(const Six &other);
 };
