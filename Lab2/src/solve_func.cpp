@@ -127,9 +127,9 @@ void Six::subtractAssign(const Six &other)
 {
     if (this == &other) {
         Six temp(other);
-        addDigits(temp);
+        subtractDigits(temp);
     } else {
-        addDigits(other);
+        subtractDigits(other);
     }
 }
 
