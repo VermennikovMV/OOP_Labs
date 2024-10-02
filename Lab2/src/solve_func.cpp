@@ -27,37 +27,58 @@ Six::Six(const size_t &n, unsigned char t)
     normalize();
 }
 
-Six::Six(const initializer_list<unsigned char> &t)
+Six::Six(const std::initializer_list<unsigned char> &t)
     : size(t.size())
 {
     digits = new unsigned char[size];
     size_t index = 0;
-    for (auto it = t.begin(); it != t.end(); ++it, ++index)
+    try
     {
-        if (*it > 5)
-            throw invalid_argument("Цифра должна быть от 0 до 5");
+        for (auto it = t.begin(); it != t.end(); ++it, ++index)
+        {
+            if (*it > 5)
+                throw std::invalid_argument("Цифра должна быть от 0 до 5");
 
-        digits[index] = *it;
+            digits[index] = *it;
+        }
+
+        normalize();
     }
-
-    normalize();
+    catch (...)
+    {
+        delete[] digits;
+        digits = nullptr;
+        size = 0;
+        throw;
+    }
 }
 
-Six::Six(const string &t)
+
+Six::Six(const std::string  &t)
 {
     size = t.length();
     digits = new unsigned char[size];
 
-    for (size_t i = 0; i < size; ++i)
+    try
     {
-        char c = t[size - i - 1]; // Переворачиваем строку для хранения младшего разряда первым
-        if (c < '0' || c > '5')
-            throw invalid_argument("Неверная цифра в строке");
+        for (size_t i = 0; i < size; ++i)
+        {
+            char c = t[size - i - 1];
+            if (c < '0' || c > '5')
+                throw std::invalid_argument("Недопустимая цифра в строке");
 
-        digits[i] = c - '0';
+            digits[i] = c - '0';
+        }
+
+        normalize();
     }
-
-    normalize();
+    catch (...)
+    {
+        delete[] digits;
+        digits = nullptr;
+        size = 0;
+        throw;
+    }
 }
 
 Six::Six(const Six &other)
