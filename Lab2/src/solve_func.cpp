@@ -108,7 +108,12 @@ Six Six::add(const Six &other) const
 
 void Six::addAssign(const Six &other)
 {
-    addDigits(other);
+    if (this == &other) {
+        Six temp(other);
+        addDigits(temp);
+    } else {
+        addDigits(other);
+    }
 }
 
 Six Six::subtract(const Six &other) const
@@ -120,7 +125,12 @@ Six Six::subtract(const Six &other) const
 
 void Six::subtractAssign(const Six &other)
 {
-    subtractDigits(other);
+    if (this == &other) {
+        Six temp(other);
+        addDigits(temp);
+    } else {
+        addDigits(other);
+    }
 }
 
 // Методы сравнения
