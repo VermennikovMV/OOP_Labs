@@ -1,4 +1,6 @@
-#include "include/solve_func.h"
+#include "include/my_struct.h"
+#include "include/stack.h"
+#include "include/custom_memory_resource.h"
 #include <iostream>
 
 // Структура, аналогичная той, что у другого студента, для демонстрации
