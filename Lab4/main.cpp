@@ -1,5 +1,9 @@
 #include <iostream>
-#include "include/solve_func.h"
+#include "include/point.h"
+#include "include/trapezoid.h"
+#include "include/rhombus.h"
+#include "include/pentagon.h"
+#include "include/array.h"
 
 using namespace std;
 

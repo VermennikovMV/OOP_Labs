@@ -4,7 +4,6 @@ project(Lab4)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
 # Добавление опций компиляции
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=maybe-uninitialized")
 
@@ -20,10 +19,13 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Создаём интерфейсную библиотеку из заголовков
+# В ней нет cpp-файлов, т.к. код шаблонный и находится весь в хедерах.
+add_library(${CMAKE_PROJECT_NAME}_lib INTERFACE)
+target_include_directories(${CMAKE_PROJECT_NAME}_lib INTERFACE include)
 
-add_library(${CMAKE_PROJECT_NAME}_lib src/solve_func.cpp)
+# Основной исполняемый файл
 add_executable(${CMAKE_PROJECT_NAME}_exe main.cpp)
-
 target_link_libraries(${CMAKE_PROJECT_NAME}_exe PRIVATE ${CMAKE_PROJECT_NAME}_lib)
 
 # Добавление тестов
