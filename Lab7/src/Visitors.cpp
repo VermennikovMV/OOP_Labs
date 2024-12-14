@@ -1,9 +1,4 @@
 #include "../include/Visitors.h"
-#include "../include/Ork.h"
-#include "../include/Squirrel.h"
-#include "../include/Bear.h"
-#include "../include/NPC.h"
-#include "../include/Observer.h"
 #include <cmath>
 
 FightVisitor::FightVisitor(std::vector<NPC*>& n,int r,Subject& sub):npcs(n),range(r),subject(sub){}

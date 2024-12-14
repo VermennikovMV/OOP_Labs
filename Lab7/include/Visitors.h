@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 #include <string>
-class Ork;
-class Squirrel;
-class Bear;
-class NPC;
-class Subject;
+#include "Ork.h"
+#include "Squirrel.h"
+#include "Bear.h"
+#include "NPC.h"
+#include "Observer.h"
 class Visitor {
 public:
     virtual ~Visitor()=default;
