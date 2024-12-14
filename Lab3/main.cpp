@@ -1,7 +1,11 @@
 #include <iostream>
-#include "include/solve_func.h"
 #include <vector>
 #include <memory>
+#include "include/figure.h"
+#include "include/geometry_utils.h"
+#include "include/pentagon.h"
+#include "include/rhombus.h"
+#include "include/trapezoid.h"
 
 using namespace std;
 
