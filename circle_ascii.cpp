@@ -36,6 +36,7 @@ void circle(int r, function<void(int x, int y)> set_pixel) {
             y++;
             d += 2 * y + 1;
         } else {
+            y++;
             x--;
             d += 2 * (y - x) + 1;
         }
